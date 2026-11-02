@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cătălin</title>
+<meta name="description" content="Cătălin: ETL developer from Moldova and founder of Morcatt Labs. I automate anything that repeats.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&family=Sora:wght@400;600;700;800&family=VT323&display=swap">
+<style>
+/* Layout: one television at the centre of the page, a VCR under it and a shelf of tapes below. */
+:root {
+  --page: #14161C; --page2: #23262F; --text: #F4F5F8; --muted: #A2A8B6;
+  --body: #2A2D36; --body2: #15171D; --edge: #FFFFFF22; --knob: #3B3F4B; --knob-ink: #F4F5F8;
+  --scr: #1538D6; --scr2: #0B238F; --ink: #F2F5FF; --hot: #FF6A3D; --glow: #3D63FF66;
+  --r: 44px; --sr: 34px; --pad: 26px; --ratio: 4 / 3;
+  --head: "Sora", system-ui, sans-serif; --ui: "Sora", system-ui, sans-serif; --screenfont: "VT323", ui-monospace, monospace;
+  --tape: #17181D; --label: #F3EFE4; --label-ink: #1B1B22; --shadow: 0 40px 90px #0009;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body { margin: 0; color: var(--text); background: radial-gradient(90% 70% at 50% 28%, var(--page2), var(--page)); font: 400 16px/1.5 var(--ui); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; overflow-x: hidden; }
+button { font: inherit; color: inherit; cursor: pointer; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--hot); outline-offset: 3px; }
+
+.stage { position: relative; display: grid; gap: 26px; justify-items: center; max-width: 860px; margin-inline: auto; }
+.intro { text-align: center; display: grid; gap: 4px; }
+.intro h1 { margin: 0; font: 800 clamp(38px, 8vw, 68px)/1 var(--head); letter-spacing: -.02em; }
+.intro p { margin: 0; color: var(--muted); font-size: clamp(16px, 2.6vw, 20px); }
+
+.rig { position: relative; width: min(100%, 720px, max(70vh, 340px)); perspective: 1400px; display: grid; gap: 12px; }
+.tv { position: relative; z-index: 1; display: grid; gap: 16px; padding: var(--pad); border-radius: var(--r); background: var(--body); border: 1px solid var(--edge); box-shadow: inset 0 2px 0 var(--edge), inset 0 -14px 34px #0003, var(--shadow), 0 0 110px var(--glow); transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .25s ease-out; }
+.screen { position: relative; aspect-ratio: var(--ratio); border-radius: var(--sr); overflow: hidden; container-type: inline-size; background: #050507; box-shadow: inset 0 0 0 3px #0008, inset 0 0 50px #000; }
+.picture { position: absolute; inset: 0; background: radial-gradient(circle at 50% 42%, var(--scr), var(--scr2)); color: var(--ink); font: 400 5cqw/1.2 var(--screenfont); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 2cqw; padding: 5cqw 6cqw; }
+.osd { display: flex; justify-content: space-between; gap: 12px; font-size: 4.6cqw; color: var(--hot); }
+.body { min-height: 0; overflow-y: auto; display: grid; align-content: center; gap: 1.4cqw; scrollbar-width: none; }
+.body h2 { margin: 0; font: inherit; font-size: 9.5cqw; line-height: 1; }
+.body p { margin: 0; }
+.body ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .4cqw; }
+.body li::before { content: "▸ "; color: var(--hot); }
+.stamp { display: flex; justify-content: space-between; gap: 12px; font-size: 4cqw; opacity: .85; }
+#noise { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; image-rendering: pixelated; pointer-events: none; }
+.lines { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, #0000 0 2px, #0003 2px 4px); mix-blend-mode: multiply; }
+.track { position: absolute; left: 0; right: 0; height: 9%; background: linear-gradient(#fff0, #fff2, #fff0); animation: track 7s linear infinite; pointer-events: none; }
+@keyframes track { from { top: -10%; } to { top: 110%; } }
+.glass { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(120deg, #ffffff2b, #fff0 32%), radial-gradient(70% 45% at 22% 8%, #ffffff24, #fff0); }
+.offname { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; color: #ffffff30; font: 800 7cqw var(--head); }
+
+.panel { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font: 700 13px var(--ui); color: var(--muted); letter-spacing: .12em; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ctl { min-width: 44px; height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--edge); background: var(--knob); color: var(--knob-ink); font-weight: 600; font-size: 14px; transition: transform .12s, box-shadow .12s; }
+.ctl:hover { transform: translateY(-2px); } .ctl:active { transform: translateY(1px) scale(.96); }
+.ctl:disabled { opacity: .4; cursor: default; transform: none; }
+.power { display: inline-flex; align-items: center; gap: 8px; background: var(--hot); color: #111; }
+.led { width: 9px; height: 9px; border-radius: 50%; background: #0006; }
+.is-on .led { background: #fff; box-shadow: 0 0 10px #fff; }
+
+/* ---------- the VCR under the set, the channel dial and screen light on the floor ---------- */
+.floor { display: block; position: absolute; left: 8%; right: 8%; bottom: -46px; height: 90px; border-radius: 50%; background: var(--scr); filter: blur(46px); opacity: 0; transition: opacity .6s; pointer-events: none; }
+.rig.is-on .floor { opacity: .5; }
+.dial { display: block; position: relative; width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #4a4f5d, #1b1d24 70%); box-shadow: inset 0 1px 0 #fff3, 0 4px 10px #0008; transform: rotate(calc(var(--ch, 0) * 72deg - 36deg)); transition: transform .45s cubic-bezier(.3,1.6,.5,1); }
+.dial::after { content: ""; position: absolute; left: 50%; top: 5px; width: 3px; height: 12px; margin-left: -1.5px; border-radius: 2px; background: var(--hot); }
+.vcr { display: flex; align-items: center; gap: 16px; position: relative; z-index: 1; height: 62px; padding: 0 22px; border-radius: 22px; background: linear-gradient(#24272f, #15171c); border: 1px solid #ffffff1a; box-shadow: inset 0 1px 0 #fff2, 0 24px 50px #0009; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .25s ease-out; }
+.slot { position: relative; flex: 1; height: 18px; border-radius: 6px; background: #07080a; box-shadow: inset 0 2px 6px #000; overflow: hidden; perspective: 200px; }
+.flap { position: absolute; inset: 2px; border-radius: 4px; background: linear-gradient(#30343e, #22252c); transform-origin: top; transition: transform .25s; }
+.vcr.loading .flap { transform: rotateX(80deg); }
+.vcr-screen { min-width: 108px; padding: 4px 10px; border-radius: 8px; background: #050b1a; color: #6FE3FF; font: 400 22px/1 "VT323", monospace; text-align: right; text-shadow: 0 0 8px #6FE3FF99; }
+.vcr-screen.blink { animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: .15; } }
+.vcr-brand { font: 700 11px "Sora", sans-serif; letter-spacing: .2em; color: #8b92a3; }
+
+.shelf { width: 100%; display: grid; gap: 10px; margin-top: 14px; }
+.shelf h2 { margin: 0; text-align: center; font: 600 14px var(--ui); color: var(--muted); }
+.tapes { display: flex; gap: 14px; overflow-x: auto; padding: 16px 6px 20px; scrollbar-width: thin; }
+.tape { flex: none; width: 190px; height: 112px; padding: 10px; display: grid; grid-template-rows: 1fr auto; gap: 8px; text-align: left; border-radius: 12px; border: 0; background: var(--tape); color: #fff; box-shadow: 0 12px 24px #0007, inset 0 1px 0 #fff2; transition: transform .2s; transform: rotate(var(--t, 0deg)); }
+.tape:hover, .tape:focus-visible { transform: translateY(-8px) rotate(calc(var(--t, 0deg) * -1)); }
+.tape[aria-pressed="true"] { outline: 3px solid var(--hot); outline-offset: 2px; }
+.reels { display: flex; justify-content: center; gap: 40px; align-items: center; background: #0007; border-radius: 6px; }
+.reels i { width: 22px; height: 22px; border-radius: 50%; background: repeating-conic-gradient(#ddd 0 20deg, #555 20deg 60deg); }
+.tape-label { padding: 2px 8px; border-radius: 3px; background: var(--label); color: var(--label-ink); font: 400 21px/1.05 "Reenie Beanie", cursive; }
+.fly-tape { position: fixed; z-index: 40; margin: 0; pointer-events: none; }
+
+@media (max-width: 560px) { :root { --pad: 14px; --r: 30px; --sr: 20px; } .brand { display: none; } .ctl { padding: 0 10px; } .vcr { height: 52px; padding: 0 14px; } .vcr-brand { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<main class="stage">
+  <header class="intro">
+    <h1>Cătălin</h1>
+    <p>I automate anything that repeats.</p>
+  </header>
+
+  <div class="rig" id="rig">
+    <div class="floor" aria-hidden="true"></div>
+    <div class="tv" id="tv">
+      <div class="screen" id="screen">
+        <div class="offname" id="offname" aria-hidden="true">press power</div>
+        <div class="picture" id="picture" hidden>
+          <div class="osd"><span id="osd-left">PLAY ▶</span><span id="osd-right">CH 01</span></div>
+          <div class="body" id="body" aria-live="polite" tabindex="0"></div>
+          <div class="stamp"><span id="counter">00:00:00</span><span id="stamp-right">SP</span></div>
+          <div class="track" aria-hidden="true"></div>
+        </div>
+        <canvas id="noise" width="160" height="110" aria-hidden="true"></canvas>
+        <div class="lines" aria-hidden="true"></div>
+        <div class="glass" aria-hidden="true"></div>
+      </div>
+      <div class="panel">
+        <span class="brand">MORCATT</span>
+        <div class="controls">
+          <span class="dial" aria-hidden="true"></span>
+          <button class="ctl" id="prev" type="button" aria-label="Previous channel" disabled>CH −</button>
+          <button class="ctl" id="next" type="button" aria-label="Next channel" disabled>CH +</button>
+          <button class="ctl" id="sound" type="button" aria-pressed="false">Sound off</button>
+          <button class="ctl power" id="power" type="button" aria-pressed="false"><span class="led"></span><span id="power-text">Power</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="vcr" id="vcr" aria-hidden="true">
+      <span class="vcr-brand">MORCATT VHS</span>
+      <span class="slot" id="slot"><span class="flap"></span></span>
+      <span class="vcr-screen blink" id="vcr-screen">12:00</span>
+    </div>
+  </div>
+
+  <section class="shelf" id="shelf" aria-labelledby="shelf-title" hidden>
+    <h2 id="shelf-title">Tapes, from the first job to now. Pick one.</h2>
+    <div class="tapes" id="tapes"></div>
+  </section>
+</main>
+
+<script>
+(function () {
+  const CHANNELS = [
+    { name: "HELLO", title: "Cătălin", lines: ["ETL developer from Moldova.", "Founder of Morcatt Labs.", "Pick a tape, or change the channel."] },
+    { name: "WORK", title: "5+ years in document data", list: ["500+ PDF-to-XML templates", "German, Slavic languages, Chinese", "ZUGFeRD and XRechnung", "Regex rules and Schematron"] },
+    { name: "PRODUCTS", title: "Cattport", lines: ["Docker services and links, right in the Synology DSM menu.", "Public beta, open source under GPLv3."], link: ["github.com/morcatt-labs/cattport", "https://github.com/morcatt-labs/cattport"] },
+    { name: "LIFE", title: "Off the clock", list: ["Zigbee home automation", "My own server, with Docker", "Surveillance camera installs"] },
+    { name: "CONTACT", title: "Let's talk", lines: ["Product ideas, applications and AI.", "catmoroshan@gmail.com"] }
+  ];
+  const TAPES = [
+    { label: "First money", title: "First money", text: "Cleaning yards and washing cars and fences for wealthy families." },
+    { label: "PC repair", title: "PC repair", text: "Where IT started for me: fixing other people's computers." },
+    { label: "Print + logos", title: "Print and logos", text: "Printing and logo design. I still care about how things look." },
+    { label: "First sites", title: "Sites and apps", text: "WordPress sites, then university apps." },
+    { label: "Callback tech", title: "Callback technician", text: "Working with customers as a callback technician at a telecom company." },
+    { label: "8 years of study", title: "8 years of study", text: "College and university: database administration and applied informatics." },
+    { label: "500+ templates", title: "500+ templates", text: "PDF-to-XML extraction templates, each one built around a client's documents." },
+    { label: "Cattport", title: "Cattport", text: "A public beta from Morcatt Labs, in every language DSM supports plus Romanian." },
+    { label: "Blank", title: "Blank tape", text: "This one is still being recorded." }
+  ];
+  const $ = (id) => document.getElementById(id);
+  const root = document.documentElement;
+  const reduce = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
+  let on = false, channel = 0, busy = false, started = 0, tapeIndex = -1, audio = null;
+
+  /* ---------- screen content ---------- */
+  function render(item, left, right) {
+    const body = $("body");
+    body.textContent = "";
+    const h = document.createElement("h2");
+    h.textContent = item.title;
+    body.append(h);
+    (item.lines || (item.text ? [item.text] : [])).forEach((line) => {
+      const p = document.createElement("p");
+      p.textContent = line;
+      body.append(p);
+    });
+    if (item.list) {
+      const ul = document.createElement("ul");
+      item.list.forEach((line) => { const li = document.createElement("li"); li.textContent = line; ul.append(li); });
+      body.append(ul);
+    }
+    if (item.link) {
+      const a = document.createElement("a");
+      a.href = item.link[1]; a.target = "_blank"; a.rel = "noopener noreferrer"; a.textContent = item.link[0];
+      body.append(a);
+    }
+    $("osd-left").textContent = left;
+    $("osd-right").textContent = right;
+    root.style.setProperty("--ch", String(channel));
+    updateVcr();
+  }
+  const showChannel = () => render(CHANNELS[channel], "PLAY ▶", "CH " + String(channel + 1).padStart(2, "0") + " " + CHANNELS[channel].name);
+
+  /* ---------- the VCR display ---------- */
+  function updateVcr(text) {
+    const display = $("vcr-screen");
+    display.classList.toggle("blink", !on);
+    display.textContent = text || (!on ? "12:00" : tapeIndex >= 0 ? "▶ " + $("counter").textContent.slice(3) : "CH " + String(channel + 1).padStart(2, "0"));
+  }
+
+  /* ---------- static ---------- */
+  const noise = $("noise"), nctx = noise.getContext("2d");
+  let burstUntil = 0, frame = 0;
+  function drawNoise() {
+    const img = nctx.createImageData(noise.width, noise.height);
+    for (let i = 0; i < img.data.length; i += 4) {
+      const v = Math.random() * 255;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+      img.data[i + 3] = 255;
+    }
+    nctx.putImageData(img, 0, 0);
+  }
+  function loop(now) {
+    if (on) {
+      const burst = now < burstUntil;
+      if (burst || frame++ % 4 === 0) drawNoise();
+      noise.style.opacity = burst ? 1 : 0.06;
+      if (started) {
+        const t = Math.floor((Date.now() - started) / 1000);
+        $("counter").textContent = [t / 3600, (t % 3600) / 60, t % 60].map((n) => String(Math.floor(n)).padStart(2, "0")).join(":");
+        if (tapeIndex >= 0 && frame % 30 === 0) updateVcr();
+      }
+    } else noise.style.opacity = now < burstUntil ? 1 : 0;
+    requestAnimationFrame(loop);
+  }
+  async function burst(ms) {
+    if (reduce()) return;
+    burstUntil = performance.now() + ms;
+    staticSound(ms);
+    await sleep(ms * 0.55);
+  }
+
+  /* ---------- sound stays off until asked for ---------- */
+  function staticSound(ms) {
+    if ($("sound").getAttribute("aria-pressed") !== "true") return;
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      const buffer = audio.createBuffer(1, audio.sampleRate * (ms / 1000), audio.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.06;
+      const source = audio.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audio.destination);
+      source.start();
+    } catch (ignored) { /* the page works the same without sound */ }
+  }
+
+  /* ---------- power and channels ---------- */
+  async function togglePower() {
+    if (busy) return;
+    busy = true;
+    const picture = $("picture");
+    if (!on) {
+      on = true;
+      started = Date.now();
+      channel = 0; tapeIndex = -1; markTape();
+      $("tv").classList.add("is-on"); $("rig").classList.add("is-on");
+      $("offname").hidden = true;
+      $("power").setAttribute("aria-pressed", "true");
+      showChannel();
+      picture.hidden = false;
+      $("shelf").hidden = false;
+      if (!reduce()) picture.animate([
+        { transform: "scale(1,.004)", filter: "brightness(6)" },
+        { transform: "scale(1,.02)", filter: "brightness(4)", offset: .3 },
+        { transform: "scale(1,1)", filter: "brightness(1)" }
+      ], { duration: 520, easing: "cubic-bezier(.2,.9,.2,1)" });
+      burst(380);
+    } else {
+      if (!reduce()) await picture.animate([
+        { transform: "scale(1,1)", filter: "brightness(1)" },
+        { transform: "scale(1,.004)", filter: "brightness(5)", offset: .7 },
+        { transform: "scale(0,.004)", filter: "brightness(8)" }
+      ], { duration: 320, easing: "ease-in" }).finished.catch(() => {});
+      on = false;
+      picture.hidden = true;
+      $("tv").classList.remove("is-on"); $("rig").classList.remove("is-on");
+      $("offname").hidden = false;
+      $("shelf").hidden = true;
+      $("power").setAttribute("aria-pressed", "false");
+      updateVcr();
+    }
+    $("prev").disabled = $("next").disabled = !on;
+    busy = false;
+  }
+  async function change(step) {
+    if (!on || busy) return;
+    busy = true;
+    tapeIndex = -1; markTape();
+    channel = (channel + step + CHANNELS.length) % CHANNELS.length;
+    root.style.setProperty("--ch", String(channel));
+    await burst(340);
+    showChannel();
+    busy = false;
+  }
+
+  /* ---------- tapes go into the VCR ---------- */
+  function buildTapes() {
+    const host = $("tapes");
+    TAPES.forEach((tape, index) => {
+      const button = document.createElement("button");
+      button.className = "tape";
+      button.type = "button";
+      button.setAttribute("aria-pressed", "false");
+      button.style.setProperty("--t", (index % 2 ? 1.6 : -1.3) + "deg");
+      const reels = document.createElement("span");
+      reels.className = "reels";
+      reels.setAttribute("aria-hidden", "true");
+      reels.append(document.createElement("i"), document.createElement("i"));
+      const label = document.createElement("span");
+      label.className = "tape-label";
+      label.textContent = tape.label;
+      button.append(reels, label);
+      button.addEventListener("click", () => playTape(index, button));
+      host.append(button);
+    });
+  }
+  function markTape() {
+    [...$("tapes").children].forEach((tape, i) => tape.setAttribute("aria-pressed", String(i === tapeIndex)));
+  }
+  async function playTape(index, button) {
+    if (!on || busy) return;
+    busy = true;
+    if (!reduce()) {
+      const from = button.getBoundingClientRect(), to = $("slot").getBoundingClientRect();
+      const clone = button.cloneNode(true);
+      clone.classList.add("fly-tape");
+      clone.style.left = from.left + "px"; clone.style.top = from.top + "px";
+      document.body.append(clone);
+      const dx = to.left + to.width / 2 - from.left - from.width / 2;
+      const dy = to.top + to.height / 2 - from.top - from.height / 2;
+      $("vcr").classList.add("loading"); updateVcr("LOAD");
+      const moved = clone.animate([
+        { transform: "none" },
+        { transform: `translate(${dx}px, ${dy + 40}px) scale(.9)`, opacity: 1, offset: .6 },
+        { transform: `translate(${dx}px, ${dy}px) scale(.85, .12)`, opacity: 0 }
+      ], { duration: 640, easing: "cubic-bezier(.5,0,.2,1)", fill: "forwards" });
+      await Promise.race([moved.finished.catch(() => {}), sleep(760)]);
+      clone.remove();
+      $("vcr").classList.remove("loading");
+    }
+    tapeIndex = index; markTape();
+    await burst(420);
+    render(TAPES[index], "TAPE ▶", "No. " + String(index + 1).padStart(2, "0"));
+    busy = false;
+  }
+
+  /* ---------- pointer ---------- */
+  addEventListener("pointermove", (event) => {
+    if (reduce() || event.pointerType === "touch") return;
+    const ry = ((event.clientX / innerWidth - .5) * 7).toFixed(2) + "deg", rx = ((.5 - event.clientY / innerHeight) * 5).toFixed(2) + "deg";
+    [$("tv"), $("vcr")].forEach((el) => { el.style.setProperty("--ry", ry); el.style.setProperty("--rx", rx); });
+  });
+  addEventListener("keydown", (event) => {
+    if (event.key === "ArrowUp" && on) { event.preventDefault(); change(1); }
+    if (event.key === "ArrowDown" && on) { event.preventDefault(); change(-1); }
+    if (event.key.toLowerCase() === "p" && !event.metaKey && !event.ctrlKey) togglePower();
+  });
+
+  $("power").addEventListener("click", togglePower);
+  $("prev").addEventListener("click", () => change(-1));
+  $("next").addEventListener("click", () => change(1));
+  $("sound").addEventListener("click", () => {
+    const next = $("sound").getAttribute("aria-pressed") !== "true";
+    $("sound").setAttribute("aria-pressed", String(next));
+    $("sound").textContent = next ? "Sound on" : "Sound off";
+    staticSound(120);
+  });
+
+  buildTapes();
+  requestAnimationFrame(loop);
+})();
+</script>
