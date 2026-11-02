@@ -21,7 +21,8 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html, body { min-height: 100%; }
-body { margin: 0; color: var(--text); background: radial-gradient(90% 70% at 50% 28%, var(--page2), var(--page)); font: 400 16px/1.5 var(--ui); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; overflow-x: hidden; }
+html { overflow-x: hidden; background: #0E0F13; }
+body { margin: 0; color: var(--text); background: transparent; font: 400 16px/1.5 var(--ui); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; overflow-x: hidden; }
 button { font: inherit; color: inherit; cursor: pointer; }
 a { color: inherit; }
 :focus-visible { outline: 3px solid var(--hot); outline-offset: 3px; }
@@ -60,6 +61,14 @@ a { color: inherit; }
 .is-on .led { background: #fff; box-shadow: 0 0 10px #fff; }
 
 /* ---------- the VCR under the set, the channel dial and screen light on the floor ---------- */
+/* ---------- the room: a dark wall, a wooden floor and the light the screen throws on both ---------- */
+.room { position: fixed; inset: 0; z-index: -2; pointer-events: none; background: radial-gradient(70% 55% at 50% 32%, #262A35, #0000 72%), repeating-linear-gradient(90deg, #ffffff06 0 1px, #0000 1px 140px), linear-gradient(#191B22, #0E0F13); }
+.room::after { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 40%, #0000 55%, #000a); }
+.boards { position: absolute; z-index: -1; top: calc(100% - 26px); left: 50%; width: 320vw; height: 110vh; transform: translateX(-50%); pointer-events: none; perspective: 600px; perspective-origin: 50% 0; border-top: 1px solid #ffffff14; background: linear-gradient(#17181D, #0B0C0F 70%); overflow: hidden; }
+.boards::before { content: ""; position: absolute; inset: 0 0 -60%; transform-origin: top; transform: rotateX(58deg); background: repeating-linear-gradient(90deg, #0000 0 calc(1.6% - 1px), #00000080 calc(1.6% - 1px) 1.6%), repeating-linear-gradient(90deg, #ffffff05 0 .5%, #0000 .5% 1.1%), linear-gradient(#2A221C, #15110E); opacity: .9; }
+.boards::after { content: ""; position: absolute; inset: 0; background: radial-gradient(28% 40% at 50% 0, var(--scr), #0000 70%); opacity: var(--spill, 0); mix-blend-mode: screen; transition: opacity .6s; }
+.spill { position: absolute; z-index: -1; inset: -35% -45% 10%; border-radius: 50%; background: radial-gradient(closest-side, #3D63FFAA, #0000); filter: blur(30px); opacity: var(--spill, 0); transition: opacity .6s; pointer-events: none; }
+#dust { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
 .floor { display: block; position: absolute; left: 8%; right: 8%; bottom: -46px; height: 90px; border-radius: 50%; background: var(--scr); filter: blur(46px); opacity: 0; transition: opacity .6s; pointer-events: none; }
 .rig.is-on .floor { opacity: .5; }
 .dial { display: block; position: relative; width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #4a4f5d, #1b1d24 70%); box-shadow: inset 0 1px 0 #fff3, 0 4px 10px #0008; transform: rotate(calc(var(--ch, 0) * 72deg - 36deg)); transition: transform .45s cubic-bezier(.3,1.6,.5,1); }
@@ -88,6 +97,8 @@ a { color: inherit; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 
+<div class="room" aria-hidden="true"></div>
+<canvas id="dust" aria-hidden="true"></canvas>
 <main class="stage">
   <header class="intro">
     <h1>Cătălin</h1>
@@ -95,6 +106,8 @@ a { color: inherit; }
   </header>
 
   <div class="rig" id="rig">
+    <div class="boards" aria-hidden="true"></div>
+    <div class="spill" aria-hidden="true"></div>
     <div class="floor" aria-hidden="true"></div>
     <div class="tv" id="tv">
       <div class="screen" id="screen">
@@ -218,6 +231,9 @@ a { color: inherit; }
         if (tapeIndex >= 0 && frame % 30 === 0) updateVcr();
       }
     } else noise.style.opacity = now < burstUntil ? 1 : 0;
+    const spill = on ? (now < burstUntil ? 0.75 : 0.42 + Math.sin(now / 900) * 0.04 + Math.random() * 0.05) : 0;
+    $("rig").style.setProperty("--spill", spill.toFixed(3));
+    drawDust(now);
     requestAnimationFrame(loop);
   }
   async function burst(ms) {
@@ -342,6 +358,29 @@ a { color: inherit; }
     busy = false;
   }
 
+  /* ---------- dust drifting in the light of the screen ---------- */
+  const dust = $("dust"), dctx = dust.getContext("2d");
+  const motes = Array.from({ length: 60 }, () => ({ x: Math.random(), y: Math.random(), z: Math.random(), vx: (Math.random() - .5) * .00012, vy: -.00004 - Math.random() * .0001 }));
+  let glow = 0;
+  function sizeDust() { const r = devicePixelRatio || 1; dust.width = innerWidth * r; dust.height = innerHeight * r; dctx.setTransform(r, 0, 0, r, 0, 0); }
+  function drawDust(now) {
+    dctx.clearRect(0, 0, innerWidth, innerHeight);
+    glow += ((on ? 1 : 0) - glow) * 0.04;
+    if (glow < 0.01 || reduce()) return;
+    const box = $("screen").getBoundingClientRect();
+    const cx = box.left + box.width / 2, cy = box.top + box.height / 2, w = box.width * 1.9, h = box.height * 1.9;
+    dctx.fillStyle = "#BFD0FF";
+    motes.forEach((m) => {
+      m.x = (m.x + m.vx + 1) % 1; m.y = (m.y + m.vy + 1) % 1;
+      const x = cx + (m.x - .5) * w + Math.sin(now / 1700 + m.z * 12) * 5, y = cy + (m.y - .5) * h;
+      const fade = Math.max(0, 1 - Math.hypot((m.x - .5) * 2, (m.y - .5) * 2));
+      dctx.globalAlpha = glow * fade * (.25 + m.z * .5);
+      const size = .8 + m.z * 1.6;
+      dctx.fillRect(x, y, size, size);
+    });
+    dctx.globalAlpha = 1;
+  }
+
   /* ---------- pointer ---------- */
   addEventListener("pointermove", (event) => {
     if (reduce() || event.pointerType === "touch") return;
@@ -364,7 +403,9 @@ a { color: inherit; }
     staticSound(120);
   });
 
+  addEventListener("resize", sizeDust);
   buildTapes();
+  sizeDust();
   requestAnimationFrame(loop);
 })();
 </script>
